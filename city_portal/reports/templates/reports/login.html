@@ -1,0 +1,21 @@
+{% extends 'reports/base.html' %}
+
+{% block title %}Главная - Сделаем лучше вместе!{% endblock %}
+<body>
+
+    {% block content %}
+    <div class="container">
+        <div class="auth-form">
+            <label for="login">Логин</label>
+            <input type="text" id="login" placeholder="Введите логин">
+
+            <label for="password">Пароль</label>
+            <input type="password" id="password" placeholder="Введите пароль">
+
+            <button type="submit">Вход</button>
+        </div>
+    </div>
+
+</body>
+</html>
+{% endblock %}

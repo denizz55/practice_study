@@ -1,0 +1,53 @@
+{% extends 'reports/base.html' %}
+
+{% block title %}Главная - Сделаем лучше вместе!{% endblock %}
+
+
+<body>
+
+  {% block content %}
+    <div class="container">
+        <div class="problem-list">
+            <h2>Недавно решенные проблемы</h2>
+            <div class="cards-container">
+                <div class="card">
+                    <div class="card-image"></div>
+                    <div class="card-content">
+                        <p><strong>Название</strong></p>
+                        <p>Категория</p>
+                        <p>Временная метка</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-image"></div>
+                    <div class="card-content">
+                        <p><strong>Название</strong></p>
+                        <p>Категория</p>
+                        <p>Временная метка</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-image"></div>
+                    <div class="card-content">
+                        <p><strong>Название</strong></p>
+                        <p>Категория</p>
+                        <p>Временная метка</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-image"></div>
+                    <div class="card-content">
+                        <p><strong>Название</strong></p>
+                        <p>Категория</p>
+                        <p>Временная метка</p>
+                    </div>
+                </div>
+            </div>
+            <div class="total-solved">
+                Количество всего решенных заявок: (число)
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+{% endblock %}

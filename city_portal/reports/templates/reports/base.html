@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Сделаем лучше вместе!{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'reports/style.css' %}">
+</head>
+<body>
+    <header>
+        <img src="{% static 'reports/10237363.png' %}" alt="Логотип">
+        <h1>Сделаем лучше вместе!</h1>
+        <div class="menu-icon" onclick="toggleMenu()" onkeydown="handleKey(event)" role="button" tabindex="0">☰</div>
+        <nav>
+                <a href="{% url 'index' %}">Главная</a>
+                <a href="{% url 'register' %}">Регистрация</a>
+                <a href="{% url 'login' %}">Авторизация</a>
+                <a href="{% url 'profile' %}">Личный кабинет</a>
+                <a href="{% url 'add_order' %}">Создать обращение</a>
+        </nav>
+    </header>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    <footer>
+        <p>&copy; 2025 Ваша компания. Все права защищены.</p>
+    </footer>
+    <script src="{% static 'reports/script.js' %}"></script>
+</body>
+</html>
