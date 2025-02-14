@@ -14,11 +14,14 @@
         <h1>Сделаем лучше вместе!</h1>
         <div class="menu-icon" onclick="toggleMenu()" onkeydown="handleKey(event)" role="button" tabindex="0">☰</div>
         <nav>
-                <a href="{% url 'index' %}">Главная</a>
-                <a href="{% url 'register' %}">Регистрация</a>
-                <a href="{% url 'login' %}">Авторизация</a>
+            <a href="{% url 'index' %}">Главная</a>
+            {% if user.is_authenticated %}
                 <a href="{% url 'profile' %}">Личный кабинет</a>
-                <a href="{% url 'add_order' %}">Создать обращение</a>
+                <a href="{% url 'logout' %}">Выход</a>
+            {% else %}
+                <a href="{% url 'register' %}">Регистрация</a>
+                <a href="{% url 'login' %}">Вход</a>
+            {% endif %}
         </nav>
     </header>
     <main>

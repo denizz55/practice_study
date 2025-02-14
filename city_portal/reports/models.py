@@ -1,29 +1,47 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.contrib.auth.models import User
 
-# Категории проблем
+# Кастомная модель пользователя
+class CustomUser(AbstractUser):
+    full_name = models.CharField(max_length=255)
+
+    groups = models.ManyToManyField(
+        "auth.Group",
+        related_name="customuser_set",  # ✅ исправлено, чтобы не конфликтовало с auth.User.groups
+        blank=True
+    )
+    
+    user_permissions = models.ManyToManyField(
+        "auth.Permission",
+        related_name="customuser_permissions_set",  # ✅ исправлено
+        blank=True
+    )
+
+    def __str__(self):
+        return self.username
+# Категории заявок
 class Category(models.Model):
-    name = models.CharField(max_length=100, unique=True)
+    name = models.CharField(max_length=255, unique=True)
 
     def __str__(self):
         return self.name
 
-# Заявки пользователей
+# Модель заявки
 class Report(models.Model):
     STATUS_CHOICES = [
         ('new', 'Новая'),
-        ('in_progress', 'В работе'),
         ('resolved', 'Решена'),
         ('rejected', 'Отклонена'),
     ]
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Связь с пользователем
-    title = models.CharField(max_length=200)  # Название проблемы
-    description = models.TextField()  # Описание
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)  # Категория
-    image = models.ImageField(upload_to='reports/', blank=True, null=True)  # Фото
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='new')  # Статус
-    created_at = models.DateTimeField(auto_now_add=True)  # Дата создания
+    title = models.CharField(max_length=255, verbose_name="Название")
+    description = models.TextField(verbose_name="Описание")
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name="Категория", default=1)
+    image = models.ImageField(upload_to="reports/", verbose_name="Фото", default='default.jpg')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='new', verbose_name="Статус")
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, verbose_name="Пользователь")
 
     def __str__(self):
         return self.title
+

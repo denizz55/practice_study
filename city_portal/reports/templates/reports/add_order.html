@@ -1,25 +1,9 @@
 {% extends 'reports/base.html' %}
-
-{% block title %}Главная - Сделаем лучше вместе!{% endblock %}
-<body>
-    {% block content %}
-    <div class="container">
-        <div class="request-form">
-            <h3>Название</h3>
-            <input type="text" placeholder="Введите название">
-            <label>Описание</label>
-            <textarea placeholder="Введите описание"></textarea>
-            <label>Категория</label>
-            <input type="text" placeholder="Введите категорию">
-            <label>Фотография</label>
-            <div class="photo-upload">
-                <label for="photo">ЗАГРУЗИТЬ</label>
-                <input type="file" id="photo">
-            </div>
-            <div class="note">Примечание: фотография не должна превышать размер в 10МБ</div>
-            <button type="submit">Отправить</button>
-        </div>
-    </div>
-</body>
-</html>
+{% block content %}
+<h2>Создать заявку</h2>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Отправить</button>
+</form>
 {% endblock %}

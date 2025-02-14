@@ -1,21 +1,22 @@
 {% extends 'reports/base.html' %}
+{% block content %}
+<h2>Вход</h2>
+<form method="post">
+    {% csrf_token %}
+    <input type="text" name="username" placeholder="Логин">
+    <input type="password" name="password" placeholder="Пароль">
+    <button type="submit" onclick="console.log('Форма отправлена')">Войти</button>
+</form>
 
-{% block title %}Главная - Сделаем лучше вместе!{% endblock %}
-<body>
+<script>
+    document.querySelector("form").addEventListener("submit", function(event) {
+        console.log("Форма отправлена через JavaScript!");
+    });
+</script>
 
-    {% block content %}
-    <div class="container">
-        <div class="auth-form">
-            <label for="login">Логин</label>
-            <input type="text" id="login" placeholder="Введите логин">
-
-            <label for="password">Пароль</label>
-            <input type="password" id="password" placeholder="Введите пароль">
-
-            <button type="submit">Вход</button>
-        </div>
-    </div>
-
-</body>
-</html>
+{% if messages %}
+    {% for message in messages %}
+        <p>{{ message }}</p>
+    {% endfor %}
+{% endif %}
 {% endblock %}
