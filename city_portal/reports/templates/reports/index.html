@@ -1,53 +1,44 @@
 {% extends 'reports/base.html' %}
 
-{% block title %}Главная - Сделаем лучше вместе!{% endblock %}
+{% block content %}
+<div class="hero">
+    <h2>Добро пожаловать!</h2>
+    <p>Здесь вы можете сообщить о проблемах в вашем городе и следить за их решением.</p>
+    {% if user.is_authenticated and not user.is_staff %}
+        <a href="{% url 'add_order' %}" class="cta-button">Создать заявку</a>
+    {% endif %}
+</div>
 
-
-<body>
-
-  {% block content %}
-    <div class="container">
-        <div class="problem-list">
-            <h2>Недавно решенные проблемы</h2>
-            <div class="cards-container">
-                <div class="card">
-                    <div class="card-image"></div>
-                    <div class="card-content">
-                        <p><strong>Название</strong></p>
-                        <p>Категория</p>
-                        <p>Временная метка</p>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-image"></div>
-                    <div class="card-content">
-                        <p><strong>Название</strong></p>
-                        <p>Категория</p>
-                        <p>Временная метка</p>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-image"></div>
-                    <div class="card-content">
-                        <p><strong>Название</strong></p>
-                        <p>Категория</p>
-                        <p>Временная метка</p>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-image"></div>
-                    <div class="card-content">
-                        <p><strong>Название</strong></p>
-                        <p>Категория</p>
-                        <p>Временная метка</p>
-                    </div>
-                </div>
+<div class="recent-reports">
+    <h3>Последние решенные заявки</h3>
+    <div class="reports-grid">
+        {% for report in resolved_reports %}
+        <div class="report-card">
+            {% if report.image %}
+            <div class="report-image">
+                <img src="{{ report.image.url }}" alt="Фото до" class="image-before">
+                {% if report.image_after %}
+                <img src="{{ report.image_after.url }}" alt="Фото после" class="image-after">
+                {% endif %}
             </div>
-            <div class="total-solved">
-                Количество всего решенных заявок: (число)
+            {% else %}
+            <div class="report-image no-image"></div>
+            {% endif %}
+            <div class="report-info">
+                <h4>{{ report.title }}</h4>
+                <p class="category">{{ report.category.name }}</p>
+                <p class="timestamp">{{ report.created_at|date:"d.m.Y H:i" }}</p>
             </div>
         </div>
+        {% empty %}
+        <p class="no-reports">Пока нет решенных заявок</p>
+        {% endfor %}
     </div>
-</body>
-</html>
+</div>
+
+<div class="stats-section">
+    <div class="stats-content">
+        <p class="stats-text">Количество решенных заявок на данный момент: <span class="stats-number">{{ total_resolved }}</span></p>
+    </div>
+</div>
 {% endblock %}

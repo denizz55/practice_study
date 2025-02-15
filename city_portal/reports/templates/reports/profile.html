@@ -1,13 +1,64 @@
 {% extends 'reports/base.html' %}
-{% block content %}
-<h2>Ваши заявки</h2>
-<ul>
-    {% for report in reports %}
-        <li>{{ report.title }} - {{ report.get_status_display }}</li>
-    {% empty %}
-        <li>Заявок нет</li>
-    {% endfor %}
-</ul>
-<a href="{% url 'add_order' %}">Создать заявку</a>
-{% endblock %}
 
+{% block title %}Личный кабинет{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <div class="user-info">
+        <h2>Личный кабинет</h2>
+        <p><strong>Логин:</strong> {{ user_info.username }}</p>
+        <p><strong>ФИО:</strong> {{ user_info.get_full_name|default:"Не указано" }}</p>
+        <p><strong>Email:</strong> {{ user_info.email|default:"Не указан" }}</p>
+    </div>
+
+    <div class="reports-section">
+        <div class="filters">
+            <h3>Фильтрация ваших заявок:</h3>
+            <form method="get" id="filterForm">
+                <label class="checkbox-label">
+                    <input type="checkbox" name="status_new" {% if request.GET.status_new %}checked{% endif %}>
+                    Только со статусом "Новая"
+                </label>
+                <label class="checkbox-label">
+                    <input type="checkbox" name="status_resolved" {% if request.GET.status_resolved %}checked{% endif %}>
+                    Только со статусом "Решенная"
+                </label>
+                <label class="checkbox-label">
+                    <input type="checkbox" name="sort_by_date" {% if request.GET.sort_by_date %}checked{% endif %}>
+                    Временная метка
+                </label>
+            </form>
+        </div>
+
+        <div class="reports-grid">
+            {% for report in user_reports %}
+            <div class="report-card">
+                {% if report.image %}
+                <div class="report-image">
+                    <img src="{{ report.image.url }}" alt="Фото к заявке">
+                </div>
+                {% else %}
+                <div class="report-image no-image"></div>
+                {% endif %}
+                <div class="report-info">
+                    <h4>{{ report.title }}</h4>
+                    <p class="category">{{ report.category.name }}</p>
+                    <p class="timestamp">{{ report.created_at|date:"d.m.Y H:i" }}</p>
+                </div>
+            </div>
+            {% empty %}
+            <p class="no-reports">У вас пока нет заявок</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script>
+    // Автоматическая отправка формы при изменении чекбоксов
+    document.querySelectorAll('#filterForm input[type="checkbox"]').forEach(checkbox => {
+        checkbox.addEventListener('change', () => {
+            document.getElementById('filterForm').submit();
+        });
+    });
+</script>
+{% endblock %}

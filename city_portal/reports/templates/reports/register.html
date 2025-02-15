@@ -1,9 +1,14 @@
 {% extends 'reports/base.html' %}
+
 {% block content %}
-<h2>Регистрация</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Зарегистрироваться</button>
-</form>
+<div class="register-container">
+    <h2>Регистрация</h2>
+    
+    <form method="post" class="register-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="submit-btn">Зарегистрироваться</button>
+    </form>
+</div>
+
 {% endblock %}
