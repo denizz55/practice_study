@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from .forms import CustomUserCreationForm, ReportForm, CategoryForm
@@ -71,30 +71,25 @@ def admin_required(view_func):
 # Личный кабинет пользователя
 @login_required
 def profile(request):
-    # Если пользователь админ, перенаправляем его в админ-панель
     if request.user.is_staff:
         return redirect('admin_profile')
-        
-    # Получаем все заявки текущего пользователя
+
     reports = Report.objects.filter(user=request.user)
-    
-    # Применяем фильтры
+
     status_new = request.GET.get('status_new')
     status_resolved = request.GET.get('status_resolved')
     sort_by_date = request.GET.get('sort_by_date')
-    
+
     if status_new:
         reports = reports.filter(status='pending')
     if status_resolved:
         reports = reports.filter(status='resolved')
-    
-    # Всегда сортируем по дате, но если выбрана временная метка, 
-    # то показываем сначала новые
+
     if sort_by_date:
         reports = reports.order_by('-created_at')
     else:
         reports = reports.order_by('created_at')
-    
+
     return render(request, 'reports/profile.html', {
         'user_reports': reports,
         'user_info': request.user,
@@ -168,3 +163,24 @@ def add_order(request):
         form = ReportForm()
     
     return render(request, "reports/add_order.html", {"form": form})
+
+# Удаление заявки
+@login_required
+def delete_application(request, application_id):
+    report = get_object_or_404(Report, id=application_id)
+    report.delete()
+    return redirect('profile')
+
+# Отклонение заявки
+@login_required
+def reject_application(request, application_id):
+    report = get_object_or_404(Report, id=application_id)
+    if request.method == "POST":
+        rejection_reason = request.POST.get('rejection_reason')
+        if rejection_reason:
+            report.status = 'rejected'
+            report.rejection_reason = rejection_reason
+            report.save()
+            messages.success(request, 'Заявка успешно отклонена.')
+        return redirect('profile')
+    return render(request, 'reports/reject_application.html', {'report': report})

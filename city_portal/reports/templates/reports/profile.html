@@ -32,7 +32,7 @@
 
         <div class="reports-grid">
             {% for report in user_reports %}
-            <div class="report-card">
+            <div class="report-card" id="report-{{ report.id }}">
                 {% if report.image %}
                 <div class="report-image">
                     <img src="{{ report.image.url }}" alt="Фото к заявке">
@@ -44,6 +44,16 @@
                     <h4>{{ report.title }}</h4>
                     <p class="category">{{ report.category.name }}</p>
                     <p class="timestamp">{{ report.created_at|date:"d.m.Y H:i" }}</p>
+                    {% if report.status == 'rejected' %}
+                        <p><strong>Статус:</strong> Отклонена</p>
+                        {% if report.rejection_reason %}
+                            <p><strong>Причина отклонения:</strong> {{ report.rejection_reason }}</p>
+                        {% endif %}
+                    {% endif %}
+                    <form action="{% url 'delete_application' report.id %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="delete-button">Удалить</button>
+                    </form>
                 </div>
             </div>
             {% empty %}
@@ -54,11 +64,26 @@
 </div>
 
 <script>
-    // Автоматическая отправка формы при изменении чекбоксов
+
     document.querySelectorAll('#filterForm input[type="checkbox"]').forEach(checkbox => {
         checkbox.addEventListener('change', () => {
             document.getElementById('filterForm').submit();
         });
     });
+
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
 </script>
 {% endblock %}

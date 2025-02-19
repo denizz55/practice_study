@@ -14,15 +14,10 @@
     <div class="reports-grid">
         {% for report in resolved_reports %}
         <div class="report-card">
-            {% if report.image %}
+            {% if report.image_after %}
             <div class="report-image">
-                <img src="{{ report.image.url }}" alt="Фото до" class="image-before">
-                {% if report.image_after %}
-                <img src="{{ report.image_after.url }}" alt="Фото после" class="image-after">
-                {% endif %}
+                <img src="{{ report.image_after.url }}" alt="Фото после" class="image-after" onmouseover="this.src='{{ report.image.url }}'" onmouseout="this.src='{{ report.image_after.url }}'">
             </div>
-            {% else %}
-            <div class="report-image no-image"></div>
             {% endif %}
             <div class="report-info">
                 <h4>{{ report.title }}</h4>

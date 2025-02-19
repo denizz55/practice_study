@@ -79,7 +79,11 @@
                                     {% csrf_token %}
                                     <input type="hidden" name="report_id" value="{{ report.id }}">
                                     <button type="submit" name="action" value="approve" class="btn approve">Одобрить</button>
-                                    <button type="submit" name="action" value="reject" class="btn reject">Отклонить</button>
+                                </form>
+                                <form method="post" action="{% url 'reject_application' report.id %}">
+                                    {% csrf_token %}
+                                    <textarea name="rejection_reason" placeholder="Введите причину отклонения" required></textarea>
+                                    <button type="submit">Отклонить</button>
                                 </form>
                                 {% elif report.status == 'approved' %}
                                 <form method="post" class="action-form">

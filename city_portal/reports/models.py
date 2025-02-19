@@ -76,6 +76,7 @@ class Report(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name='Категория')
     image = models.ImageField(upload_to='reports/', null=True, blank=True, verbose_name='Фото до')
     image_after = models.ImageField(upload_to='reports_after/', null=True, blank=True, verbose_name='Фото после')
+    rejection_reason = models.TextField(blank=True, null=True, verbose_name='Причина отклонения')
 
     class Meta:
         verbose_name = 'Заявка'
