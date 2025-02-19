@@ -620,6 +620,7 @@ button:hover {
     padding: 8px 12px;
     border: 1px solid #ced4da;
     border-radius: 4px;
+    width: 300px;
 }
 
 .category-form button {
@@ -1086,6 +1087,7 @@ button:hover {
     color: #666;
     margin-top: 5px;
 }
+
 
 .form-submit {
     margin-top: 10px;
