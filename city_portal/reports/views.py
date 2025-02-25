@@ -81,23 +81,24 @@ def profile(request):
     sort_by_date = request.GET.get('sort_by_date')
 
     if status_new:
-        reports = reports.filter(status='pending')
+        reports = reports.filter(status='new')
     if status_resolved:
         reports = reports.filter(status='resolved')
-
     if sort_by_date:
         reports = reports.order_by('-created_at')
-    else:
-        reports = reports.order_by('created_at')
 
-    return render(request, 'reports/profile.html', {
-        'user_reports': reports,
+    context = {
         'user_info': request.user,
-    })
+        'user_reports': reports,
+    }
+    return render(request, 'reports/profile.html', context)
 
 # Личный кабинет администратора
-@admin_required
+@login_required
 def admin_profile(request):
+    if not request.user.is_staff:
+        return redirect('profile')
+
     if request.method == "POST":
         if 'add_category' in request.POST:
             category_form = CategoryForm(request.POST)
@@ -132,20 +133,36 @@ def admin_profile(request):
                     report.status = status_mapping[action]
                     report.save()
                     messages.success(request, f'Статус заявки "{report.title}" обновлен на {report.get_status_display()}')
-    
+
     # Получаем все заявки для админа
-    all_problems = Report.objects.all().order_by('-created_at')
+    all_problems = Report.objects.all()
+
+    # Фильтрация как у пользователя
+    status_new = request.GET.get('status_new')
+    status_resolved = request.GET.get('status_resolved')
+    sort_by_date = request.GET.get('sort_by_date')
+
+    if status_new:
+        all_problems = all_problems.filter(status='new')
+    if status_resolved:
+        all_problems = all_problems.filter(status='resolved')
+    if sort_by_date:
+        all_problems = all_problems.order_by('-created_at')
+    else:
+        all_problems = all_problems.order_by('created_at')
+
     # Создаем пустую форму для категории
     category_form = CategoryForm()
     # Получаем все существующие категории
-    categories = Category.objects.all().order_by('name')
-    
-    return render(request, 'reports/admin_profile.html', {
+    categories = Category.objects.all()
+
+    context = {
         'all_problems': all_problems,
         'user': request.user,
         'category_form': category_form,
-        'categories': categories
-    })
+        'categories': categories,
+    }
+    return render(request, 'reports/admin_profile.html', context)
 
 # Создание заявки
 @login_required
@@ -168,8 +185,13 @@ def add_order(request):
 @login_required
 def delete_application(request, application_id):
     report = get_object_or_404(Report, id=application_id)
-    report.delete()
-    return redirect('profile')
+    if report.status not in ['resolved', 'rejected']:
+        report.delete()
+        messages.success(request, 'Заявка успешно удалена')
+        return redirect('profile')
+    else:
+        messages.error(request, 'Невозможно удалить заявку со статусом "Решена" или "Отклонена"')
+        return redirect('profile')
 
 # Отклонение заявки
 @login_required

@@ -38,6 +38,24 @@
         <div class="reports-section">
             <h2>Управление заявками</h2>
             
+            <div class="filters">
+                <h3>Фильтрация заявок:</h3>
+                <form method="get" id="filterForm">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="status_new" {% if request.GET.status_new %}checked{% endif %}>
+                        Только со статусом "Новая"
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="status_resolved" {% if request.GET.status_resolved %}checked{% endif %}>
+                        Только со статусом "Решенная"
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="sort_by_date" {% if request.GET.sort_by_date %}checked{% endif %}>
+                        Временная метка
+                    </label>
+                </form>
+            </div>
+            
             {% if all_problems %}
                 <div class="reports-grid">
                     {% for report in all_problems %}
@@ -118,4 +136,12 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.querySelectorAll('#filterForm input[type="checkbox"]').forEach(checkbox => {
+        checkbox.addEventListener('change', () => {
+            document.getElementById('filterForm').submit();
+        });
+    });
+</script>
 {% endblock %}
